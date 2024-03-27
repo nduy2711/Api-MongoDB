@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Order</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="" class="logo">
+        <img src="/public/images/vanlang-logo.png" alt="">
+    </a>
+    <div id="menu">
+        <div class="menu__item">
+            <a href="./index.html">Home</a>
+            <a href="./order">Order list</a>
+            <a href="./create.html">Create order</a>
+            <a href="./delete.html">Delete Order</a>
+            <a href="./update.html">Update Order</a>
+            <a href="./search.html">Search Order</a>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <h2>Cập nhật Order</h2>
+    <form id="updateForm">
+        <label for="orderID">Order ID:</label><br>
+        <input type="text" id="orderID" name="orderID"><br>
+
+        <label for="orderDate">Order Date:</label><br>
+        <input type="date" id="orderDate" name="orderDate"><br>
+
+        <label for="totalAmount">Total Amount:</label><br>
+        <input type="number" id="totalAmount" name="totalAmount"><br>
+
+        <label for="orderStatus">Order Status:</label><br>
+        <input type="text" id="orderStatus" name="orderStatus"><br>
+
+        <label for="paymentMethod">Payment Method:</label><br>
+        <input type="text" id="paymentMethod" name="paymentMethod"><br>
+
+        <label for="image">Image:</label><br>
+        <input type="file" id="image" name="image"><br>
+
+        <button type="submit">Cập nhật</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById("updateForm").addEventListener("submit", function(event){
+        event.preventDefault();
+
+        var orderID = document.getElementById("orderID").value;
+        var orderDate = document.getElementById("orderDate").value;
+        var totalAmount = document.getElementById("totalAmount").value;
+        var orderStatus = document.getElementById("orderStatus").value;
+        var paymentMethod = document.getElementById("paymentMethod").value;
+        var image = document.getElementById("image").value;
+        const data = {orderDate: orderDate, totalAmount: totalAmount, orderStatus: orderStatus, paymentMethod: paymentMethod, image: image}
+
+        fetch("/api/orders/" + orderID,{
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => alert(data.message))
+        .catch(error => {
+            console.error(error);
+            alert('An error occurred while updating the user.');
+        })
+    })
+</script>
+
+</body>
+</html>

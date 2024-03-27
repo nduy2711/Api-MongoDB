@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Order</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .order-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .order-details {
+            width: calc(50% - 20px);
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        .order-details img {
+            max-width: 100px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="back-icon"><a href="index.html"><i class="fa-solid fa-arrow-left"></i></a></div>
+        <h1>Search Order</h1>
+        <form id="searchForm">
+            <input type="text" id="orderID" placeholder="Enter Order ID">
+        </form>
+        <div class="order-container" id="orderDetails">
+            <!-- Đây là nơi để hiển thị thông tin của đơn hàng được tìm kiếm -->
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("orderID").addEventListener("input", function() {
+            const orderID = this.value.trim();
+            const orderDetails = document.getElementById("orderDetails");
+
+            // Clear previous search results
+            orderDetails.innerHTML = '';
+
+            // Perform search if orderID is not empty
+            if (orderID !== '') {
+                fetch(`/api/orders/${orderID}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Order not found');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (Array.isArray(data)) {
+                            data.forEach(order => {
+                                const orderDiv = document.createElement('div');
+                                orderDiv.classList.add('order-details');
+                                orderDiv.innerHTML = `
+                                    <h2>Order Details</h2>
+                                    <p><strong>Order ID:</strong> ${order.orderID}</p>
+                                    <p><strong>Order Date:</strong> ${order.orderDate}</p>
+                                    <p><strong>Total Amount:</strong> $${order.totalAmount.toFixed(2)}</p>
+                                    <p><strong>Order Status:</strong> ${order.orderStatus}</p>
+                                    <p><strong>Payment Method:</strong> ${order.paymentMethod}</p>
+                                    <p><strong>Image:</strong> <img src="/images/${order.image}" alt="Order Image"></p>
+                                `;
+                                orderDetails.appendChild(orderDiv);
+                            });
+                        } else {
+                            const orderDiv = document.createElement('div');
+                            orderDiv.classList.add('order-details');
+                            orderDiv.innerHTML = `
+                                <h2>Order Details</h2>
+                                <p><strong>Order ID:</strong> ${data.orderID}</p>
+                                <p><strong>Order Date:</strong> ${data.orderDate}</p>
+                                <p><strong>Total Amount:</strong> $${data.totalAmount.toFixed(2)}</p>
+                                <p><strong>Order Status:</strong> ${data.orderStatus}</p>
+                                <p><strong>Payment Method:</strong> ${data.paymentMethod}</p>
+                                <p><strong>Image:</strong> <img src="/images/${data.image}" alt="Order Image"></p>
+                            `;
+                            orderDetails.appendChild(orderDiv);
+                        }
+                    })
+                    .catch(error => {
+                        orderDetails.innerHTML = `<p>${error.message}</p>`;
+                    });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -162,6 +162,11 @@ async function updateManyOrders(key, updatedData) {
     }
 }
 
-updateManyOrders("Deliver", "Success");
-
-findOrder()
+module.exports = {
+    connectToMongoDB,
+    findOrder,
+    addManyOrders,
+    deleteOrder,
+    updateOrder,
+    updateManyOrders
+}

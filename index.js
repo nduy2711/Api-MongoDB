@@ -10,7 +10,7 @@ const { orders } = require('./order');
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
-const mongoModule = require("./public/Javascript/mongoDB");
+const mongodbModule = require("./public/Javascript/mongoDB");
 
 mongodbModule.connectToMongoDB()
     .then(() => {
@@ -37,18 +37,28 @@ app.get('/', (req, res) => {
 
 app.get('/order', (req,res) =>
 {
+    try {
+        //const orders = mongoModule.findOrder()
+        const html = orderModule.output();
+        res.send(html) 
+    } catch(err) {
+        console.error('Failed to fetch documents', err);
+        res.status(500).send('Failed to fetch documents');
+    }
     html = orderModule.output()
     res.send(html)
 })
 
 
 app.post('/api/order', (req, res) => {
-    const { orderDate, totalAmount, orderStatus, paymentMethod, image } = req.body;
-    const lastOrderID = orders[orders.length - 1].orderID;
-    const newOrderID = 'OD' + String(parseInt(lastOrderID.substring(2)) + 1).padStart(8, '0');
-    const newOrder = { orderID: newOrderID, orderDate, totalAmount, orderStatus, paymentMethod, image, isNew: true }; // Add a new property 'isNew'
-    orderModule.addOrder(newOrder);
-    res.send(`Đã nhận dữ liệu thành công! ${newOrderID}. Bạn có thể xem dữ liệu mới <a href="/order">tại đây</a>`);
+    try {
+        const orders = mongoModule.findOrder()
+        const html = orderModule.output();
+        res.send(html) 
+    } catch(err) {
+        console.error('Failed to fetch documents', err);
+        res.status(500).send('Failed to fetch documents');
+    }
 });
 
 app.delete('/api/delete/:orderID', (req, res) => {

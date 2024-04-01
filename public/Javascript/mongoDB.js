@@ -11,18 +11,41 @@ async function connectToMongoDB()
 {
     try {
         await client.connect();
-        console.log('Connect to MongoDB successfully !!!');
+        //.log('Connect to MongoDB successfully !!!');
+        dbCollection = client.db(dbName).collection(collectionName);
     } catch (err) {
-        console.error('Error: ',err);
-    } finally{
-        if(client){
-            await client.connect();
-            console.log('MongoDB connection closed');
-        }
+        throw err;
+    }    
+}
+
+async function closeMongoDBConnection() {
+    if(client) {
+        await client.close()
+            then(() => {
+                console.log('Disconnected from MongoDB');
+                process.exit(0);
+            })
+            .catch((error) => {
+                console.error('Failed to disconnect from MongoDB', error);
+                process.exit(1);
+            })
+    } else {
+        process.exit(0)
     }
 }
 
-connectToMongoDB()
+// Dữ liệu orders để thêm vào
+const orders = [
+    { "orderID": "OD20240021", "orderDate": "2024-02-13", "totalAmount": 220.00, "orderStatus": "Processing", "paymentMethod": "Credit Card", "image": "14.jpg" },
+    { "orderID": "OD20240022", "orderDate": "2024-02-14", "totalAmount": 80.75, "orderStatus": "Pending", "paymentMethod": "Cash on Delivery", "image": "15.jpg" },
+    // Thêm dữ liệu tiếp theo tại đây nếu cần
+];
+
+
+async function findDocuments() {
+    const documents = await dbCollection.find().toArray();
+    return documents;
+}
 
 async function findOrder() {
     try {
@@ -52,6 +75,34 @@ async function findOrder() {
     }
 }
 
+async function addOrder(order) {
+    try {
+        await client.connect();
+        console.log('Connect to MongoDB successfully !!!');
+
+        // select collection
+        ordersCollection = client.db(dbName).collection(collectionName);
+
+        let maxId = 0;
+        for (let i = 9; i < ordersCollection.length; i++) {
+            const newId = orderID = parseInt(ordersCollection[i].orderID.substring(5));
+            if(orderID > maxId) {
+                maxId = orderID;
+            }
+        }
+
+        const newId = 'OD2024' + String(maxId + 1).padStart(4, '0');
+        return newId;
+    } catch (err){
+        console.error('Error', err);
+    } finally {
+        if(client) {
+            await client.close();
+            console.log('MongoDB connection closed')
+        }
+    }
+}
+
 async function addManyOrders(orders) {
     const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -71,13 +122,6 @@ async function addManyOrders(orders) {
         await client.close();
     }
 }
-
-// Dữ liệu orders để thêm vào
-const orders = [
-    { "orderID": "OD20240021", "orderDate": "2024-02-13", "totalAmount": 220.00, "orderStatus": "Processing", "paymentMethod": "Credit Card", "image": "14.jpg" },
-    { "orderID": "OD20240022", "orderDate": "2024-02-14", "totalAmount": 80.75, "orderStatus": "Pending", "paymentMethod": "Cash on Delivery", "image": "15.jpg" },
-    // Thêm dữ liệu tiếp theo tại đây nếu cần
-];
 
 async function deleteOrder(orderID) {
     try {
@@ -164,7 +208,10 @@ async function updateManyOrders(key, updatedData) {
 
 module.exports = {
     connectToMongoDB,
+    closeMongoDBConnection,
+    findDocuments,
     findOrder,
+    addOrder,
     addManyOrders,
     deleteOrder,
     updateOrder,

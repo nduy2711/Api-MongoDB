@@ -56,10 +56,11 @@ app.get('/order', async (req,res) =>
 
 app.post('/api/order', async (req, res) => {
     const order = req.body;
-    mongodbModule.addOrder(order);
-    console.log(req.body);
-    res.send(`Thêm thành công ${req.body.name}! Bạn có thể xem lại danh sách <a href=/order>tại đây</a>`)
-    
+    console.log(order);
+    mongodbModule.addManyOrders(order);
+    const message  = `${order.length} orders created successfully!`
+    res.json({message: message})
+    //res.send(`Thêm thành công ${req.body.name}! Bạn có thể xem lại danh sách <a href=/order>tại đây</a>`)
 });
 
 // app.delete('/api/delete/:orderID', (req, res) => {

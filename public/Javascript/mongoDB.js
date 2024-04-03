@@ -21,7 +21,7 @@ async function connectToMongoDB()
 async function closeMongoDBConnection() {
     if(client) {
         await client.close()
-            then(() => {
+            .then(() => {
                 console.log('Disconnected from MongoDB');
                 process.exit(0);
             })

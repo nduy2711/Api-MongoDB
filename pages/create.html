@@ -1,108 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Order</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Order Management</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0px;
-            background-color: #f4f4f4;
+            padding: 0;
+            background-color: #f0f0f0;
         }
-
-        #orderForm {
+        .container {
             max-width: 600px;
-            margin: 0 auto;
-            background-color: #fff;
+            margin: 50px auto;
             padding: 20px;
+            background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
-        label {
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        input[type="text"],
-        input[type="date"],
-        input[type="number"],
-        input[type="file"],
-        button {
-            width: 100%;
-            padding: 10px;
+        .form-group {
             margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="number"], input[type="date"], input[type="file"] {
+            width: calc(100% - 22px);
+            padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            box-sizing: border-box;
+            margin-bottom: 10px;
         }
-
-        button {
-            background-color: #007bff;
+        input[type="submit"], input[type="button"] {
+            background-color: #4caf50;
             color: #fff;
+            padding: 10px 20px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            margin-right: 10px;
         }
-
-        button:hover {
-            background-color: #0056b3;
+        input[type="submit"]:hover, input[type="button"]:hover {
+            background-color: #45a049;
+        }
+        #message {
+            margin-top: 10px;
+            color: red;
+            font-weight: bold;
         }
     </style>
 </head>
-
-<body>
-    <header>
-        <a href="" class="logo">
-            <img src="/public/images/vanlang-logo.png" alt="">
-        </a>
-        <div id="menu">
-            <div class="menu__item">
-                <a href="./index.html">Home</a>
-                <a href="./order">Order list</a>
-                <a href="./create.html">Create order</a>
-                <a href="./delete.html">Delete Order</a>
-                <a href="./update.html">Update Order</a>
-                <a href="./search.html">Search Order</a>
-            </div>
-        </div>
-    </header>
-
-    <div id="orderForm">
-        <h2>Tạo Order</h2>
-        <form action="/api/order" method="post">
-            <!-- Sử dụng output để hiển thị orderID mới -->
-<label for="generatedOrderID">Order ID:</label>
-            <output id="generatedOrderID"></output>
-
+<body onload="setFocus()">
+    <div class="container">
+        <h2>Order Management</h2>
+        <form id="orderForm" action="/createManyOrders" method="POST">
+            <label for="orderID">Order ID:</label><br>
+            <input type="text" id="orderID" name="orderID"><br>
+                    
             <label for="orderDate">Order Date:</label><br>
             <input type="date" id="orderDate" name="orderDate"><br>
-
+                    
             <label for="totalAmount">Total Amount:</label><br>
             <input type="number" id="totalAmount" name="totalAmount"><br>
-
+                    
             <label for="orderStatus">Order Status:</label><br>
             <input type="text" id="orderStatus" name="orderStatus"><br>
-
+                    
             <label for="paymentMethod">Payment Method:</label><br>
             <input type="text" id="paymentMethod" name="paymentMethod"><br>
-
+                    
             <label for="image">Image:</label><br>
             <input type="file" id="image" name="image"><br><br>
-
-            <button type="submit">Tạo</button>
+            <input type="button" value="Add" onclick="addOrder()">
+            <input type="button" value="Submit" onclick="submitOrders()">
         </form>
+        <div id="message"></div>
     </div>
 
-    <script src="/createOrder.js"></script>
-    <script >
-        const Id = generateId();
-        document.getElementById("generatedOrderID").value = Id;
+    <script>
+        var orders = [];
+
+        function addOrder() {
+            var orderID = document.getElementById("orderID").value;
+            var orderDate = document.getElementById("orderDate").value;
+            var totalAmount = document.getElementById("totalAmount").value;
+            var orderStatus = document.getElementById("orderStatus").value;
+            var paymentMethod = document.getElementById("paymentMethod").value;
+            var image = document.getElementById("image").value;
+            
+            var order = {
+                orderID: orderID,
+                orderDate: orderDate,
+                totalAmount: totalAmount,
+                orderStatus: orderStatus,
+                paymentMethod: paymentMethod,
+                image: image
+            };
+        
+            orders.push(order);
+            outputMessage(`The order [${orderID}, ${orderDate}, ${orderStatus}] has been added`, 'red');
+        }
+        
+        function submitOrders() {
+            fetch('/createManyOrders', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(orders)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from server: ', data);
+                alert(data.message);
+                resetForm();
+            })
+            .catch(err => {
+                console.error('Error: ',err);
+            })
+        }
+        
+        function resetForm() {
+            document.getElementById('orderForm').reset();
+            document.getElementById('message').textContent = '';
+            setFocus();
+            orders = [];
+        }
+        
+        function setFocus() {
+            document.getElementById('orderID').focus();
+        }
+        
+        function outputMessage(message, color) {
+            var messageElement = document.getElementById('message');
+            messageElement.textContent = message;
+            messageElement.style.color = color;
+        }
     </script>
 </body>
-
 </html>

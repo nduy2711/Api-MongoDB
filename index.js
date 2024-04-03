@@ -53,8 +53,9 @@ app.get('/order', async (req,res) =>
     }
 })
 
+app.post
 
-app.post('/api/order', async (req, res) => {
+app.post('/createManyOrders', async (req, res) => {
     const order = req.body;
     console.log(order);
     mongodbModule.addManyOrders(order);
@@ -62,6 +63,8 @@ app.post('/api/order', async (req, res) => {
     res.json({message: message})
     //res.send(`Thêm thành công ${req.body.name}! Bạn có thể xem lại danh sách <a href=/order>tại đây</a>`)
 });
+
+
 
 // app.delete('/api/delete/:orderID', (req, res) => {
 //     const orderID = req.params.orderID;

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Management</title>
+    <link rel="stylesheet" href="style.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,6 +12,12 @@
             padding: 0;
             background-color: #f0f0f0;
         }
+
+        h2{
+            margin-top: 30px;
+            margin-left: 600px;
+        }
+
         .container {
             max-width: 600px;
             margin: 50px auto;
@@ -53,9 +60,27 @@
         }
     </style>
 </head>
+
+<header>
+    <a href="" class="logo">
+        <img src="/public/images/vanlang-logo.png" alt="">
+    </a>
+    <div id="menu">
+        <div class="menu__item">
+            <a href="./index.html">Home</a>
+            <a href="./order">Order list</a>
+            <a href="./create.html">Create order</a>
+            <a href="./delete.html">Delete Order</a>
+            <a href="./read-for-update.html">Update Order</a>
+            <a href="./search.html">Search Order</a>
+            <a href="./read.html">Read</a>
+        </div>
+    </div>
+</header>
+
 <body onload="setFocus()">
+    <h2>Order Management</h2>
     <div class="container">
-        <h2>Order Management</h2>
         <form id="orderForm" action="/createManyOrders" method="POST">
             <label for="orderID">Order ID:</label><br>
             <input type="text" id="orderID" name="orderID"><br>

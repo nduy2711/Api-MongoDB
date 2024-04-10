@@ -64,7 +64,7 @@
     <div id="menu">
         <div class="menu__item">
             <a href="./index.html">Home</a>
-            <a href="./order">Order list</a>
+            <a href="/order">Order list</a>
             <a href="./create.html">Create order</a>
             <a href="./delete.html">Delete Order</a>
             <a href="./update.html">Update Order</a>
@@ -73,61 +73,49 @@
     </div>
 </header>
 
-<<div class="container">
-    <h2>Cập nhật Order</h2>
-    <form id="updateForm">
-        <label for="orderID">Order ID:</label><br>
-        <input type="text" id="orderID" name="orderID"><br>
+<form action="/update" method="PUT">
+    <label for="orderID">Order ID:</label>
+    <input type="text" id="orderID" name="orderID" readonly><br><br>
 
-        <label for="orderDate">Order Date:</label><br>
-        <input type="date" id="orderDate" name="orderDate"><br>
+    <label for="totalAmount">Total Amount:</label>
+    <input type="number" id="totalAmount" name="totalAmount"><br><br>
 
-        <label for="totalAmount">Total Amount:</label><br>
-        <input type="number" id="totalAmount" name="totalAmount"><br>
-
-        <label for="orderStatus">Order Status:</label><br>
-        <input type="text" id="orderStatus" name="orderStatus"><br>
-
-        <label for="paymentMethod">Payment Method:</label><br>
-        <input type="text" id="paymentMethod" name="paymentMethod"><br>
-
-        <label for="image">Image:</label><br>
-        <input type="file" id="image" name="image"><br>
-
-        <button type="button" id="updateButton">Update</button>
-        <button type="submit">Submit</button>
-    </form>
-</div>
-
-</div>
+    <label for="paymentMethod">Payment Method:</label>
+    <input type="text" id="paymentMethod" name="paymentMethod"><br><br>
+    
+    <button type="button" onclick="updateOrder()">Update</button>
+</form>
 
 <script>
-    document.getElementById("updateForm").addEventListener("submit", function(event){
-        event.preventDefault();
+    const queryParams = new URLSearchParams(window.location.search);
+    const oldOrder = Object.fromEntries(queryParams.entries());
+    let newOrder = oldOrder;
 
-        var orderID = document.getElementById("orderID").value;
-        var orderDate = document.getElementById("orderDate").value;
-        var totalAmount = document.getElementById("totalAmount").value;
-        var orderStatus = document.getElementById("orderStatus").value;
-        var paymentMethod = document.getElementById("paymentMethod").value;
-        var image = document.getElementById("image").value;
-        const data = {orderDate: orderDate, totalAmount: totalAmount, orderStatus: orderStatus, paymentMethod: paymentMethod, image: image}
+    document.getElementById('orderID').value = oldOrder.orderID;
+    document.getElementById('totalAmount').value = oldOrder.totalAmount;
+    document.getElementById('paymentMethod').value = oldOrder.paymentMethod;
 
-        fetch("/api/orders/" + orderID,{
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
+    function updateOrder() {
+        newOrder.totalAmount = document.getElementById('totalAmount').value;
+        newOrder.paymentMethod = document.getElementById('paymentMethod').value;
+
+        fetch('/update', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newOrder)
         })
         .then(response => response.json())
-        .then(data => alert(data.message))
-        .catch(error => {
-            console.error(error);
-            alert('An error occurred while updating the user.');
+        .then(data => {
+            console.log('Response from server:', data);
+            alert(data.message);
         })
-    })
+        .catch(err => {
+            // console.error('Error: ', err);
+            alert('Cannot update: ' + err);
+        });
+    }
 </script>
+
 
 </body>
 </html>

@@ -63,14 +63,28 @@ function output(orders) {
                         margin: 0 auto;
                     }
                     .back-icon {
-                        text-align: left;
-                        margin-bottom: 20px;
-                    }
-                    .back-icon a {
+                        margin-top: 20px; /* Điều chỉnh khoảng cách phía trên nút */
+                      }
+                      
+                      .back-icon a {
                         text-decoration: none;
-                        color: #000000;
-                        font-size: 24px;
-                    }
+                        color: #333;
+                        display: inline-block;
+                        padding: 5px 10px;
+                        border: 1px solid #333;
+                        border-radius: 5px;
+                        transition: background-color 0.3s, color 0.3s;
+                      }
+                      
+                      .back-icon a i {
+                        margin-right: 5px;
+                      }
+                      
+                      .back-icon a:hover {
+                        background-color: #333;
+                        color: #fff;
+                      }
+
                 </style>
             </head>
             <body>

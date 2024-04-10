@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search Orders</title>
+<link rel="stylesheet" href="style.css">
+<style>
+      /* Form styles */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+  }
+  
+  form {
+    background-color: #fff;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  label {
+    font-weight: bold;
+  }
+  
+  input[type="text"],
+  input[type="number"],
+  button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  button {
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #555;
+  }
+  
+</style>
+</head>
+
+<header>
+  <a href="" class="logo">
+      <img src="/public/images/vanlang-logo.png" alt="">
+  </a>
+  <div id="menu">
+      <div class="menu__item">
+          <a href="./index.html">Home</a>
+          <a href="./order">Order list</a>
+          <a href="./create.html">Create order</a>
+          <a href="./delete.html">Delete Order</a>
+          <a href="./read-for-update.html">Update Order</a>
+          <a href="./search.html">Search Order</a>
+          <a href="./read.html">Read</a>
+      </div>
+  </div>
+</header>
+
+<body>
+<form action="/read" method="GET">
+  <label for="paymentMethod">Payment Method:</label><br>
+  <input type="text" id="paymentMethod" name="paymentMethod"><br><br>
+  <label for="minPrice">Minimum Price:</label><br>
+  <input type="number" id="minPrice" name="minPrice"><br><br>
+  <label for="maxPrice">Maximum Price:</label><br>
+  <input type="number" id="maxPrice" name="maxPrice"><br><br>
+  <button type="submit">Search</button>
+</form>
+
+</body>
+</html>
